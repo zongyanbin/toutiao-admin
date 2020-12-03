@@ -7,7 +7,12 @@
 </template>
 <script>
 export default {
-
+  name: 'App',
+  data () {
+    return {
+      num: 6
+    }
+  }
 }
 </script>
 <style lang="less"></style>
