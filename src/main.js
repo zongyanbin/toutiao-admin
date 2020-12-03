@@ -5,7 +5,7 @@
 import Vue from 'vue'// 加载vue
 import App from './App.vue' // 加载根组件
 import router from './router'// 加载路由
-import './styles/index.less'// 加载全局样式
+// import './styles/index.less'// 加载全局样式
 
 // 加载 element 组件库
 import ElementUI from 'element-ui'
