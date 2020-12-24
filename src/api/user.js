@@ -22,8 +22,8 @@ export const getUserProfile = () => {
     headers: {
       // 属性名和值都得看接口的要求
       // 属性名： Authorization 接口要求的
-      // 属性值： Bearer 空格 token 数据
-      authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2Mzg3MTYzNjQsInVzZXJfaWQiOjEsInJlZnJlc2giOmZhbHNlLCJ2ZXJpZmllZCI6dHJ1ZX0.OqClrVjqhUwj3mZQkeTwmijQyxlgTZVS6eG44SEJJvE'
+      // 属性值： Bearer 空格token数据
+      authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDAyNTAxNDcsInVzZXJfaWQiOjEsInJlZnJlc2giOmZhbHNlLCJ2ZXJpZmllZCI6dHJ1ZX0.TFBaLGlwwL7u9RG5dKDvUOSsK2NHqQp6UJTxUDq8kzY'
     }
   })
 }

@@ -66,6 +66,7 @@ export default {
       formRules: { // 表单验证规则配置
       // 需要验证码的数据名称： 规则列表[]
         mobile: [
+          // trigger 用来配置触发效验的时机， 有两个选项， change 是当输入内容发送发生变化的时候， blur 当失去焦点的时候
           { required: true, message: '请输入手机号', trigger: 'change' },
           { pattern: /^1[3|5|7|8|9|6]\d{9}$/, message: '请输入正确的号码格式', trigger: 'change' }
         ],
@@ -78,10 +79,15 @@ export default {
             // 自定义效验规则
             // 验证通过： callback()
             // 验证失败： callback(new Error('错误消息'))
+            // validator 验证函数不是你来调用的， 而是当 element 表单触发验证的时候它会自己内部调用
+            // 所以你只需要提供效验函数处理逻辑就可以了
+            // 通过： callback()
             validator: (rule, value, callback) => {
               if (value) {
+                // 验证通过
                 callback()
               } else {
+                // 验证失败 new Error传递错误消息
                 callback(new Error('请同意用户协议'))
               }
             },
@@ -136,6 +142,10 @@ export default {
         // 关闭 loading
         this.loginLoading = false
 
+        // 将接口返回的用户相关数据放到本地存储，方便应用数据共享
+        // 本地存储只能存储字符串
+        // 如果需要存储对象、数组类型的数据，则把他们转为 JSON 格式字符串进行存储
+        window.localStorage.setItem('user', JSON.stringify(res.data.data))
         // 跳转到首页
         this.$router.push({
           name: 'home'

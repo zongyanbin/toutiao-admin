@@ -1,9 +1,9 @@
 <template>
-<el-container class="layout-container">
-  <el-aside
-  class="aside"
-  width="200px"
-  >
+  <el-container class="layout-container">
+    <el-aside
+      class="aside"
+      width="auto"
+    >
   <AppAside class="aside-menu" />
   </el-aside>
   <el-container>
@@ -16,7 +16,7 @@
       <el-dropdown>
         <div class="avatar-wrap">
           <img class="avatar" :src="user.photo" alt="">
-          <span>用户昵称{{user.name}}</span>
+          <span>{{user.name}}</span>
           <i class="el-icon-arrow-down el-icon--right"></i>
         </div>
       <!--<span>
@@ -72,7 +72,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style scoped lang="less">
 .layout-container {
   position: fixed;
   left: 0;
@@ -80,30 +80,32 @@ export default {
   top: 0;
   bottom: 0;
 }
+
 .aside {
-  background-color: rgb(84, 92, 100);
-  .aside-menu{
-    height: 100%
+  background-color: #d3dce6;
+  .aside-menu {
+    height: 100%;
   }
 }
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #ccc;
-}
-.main {
-  background-color: #e9eef3;
-}
-.avatar-wrap {
-  display: flex;
-  align-items: center;
-  .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
+  .avatar-wrap {
+    display: flex;
+    align-items: center;
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
   }
 }
 
+.main {
+  background-color: #e9eef3;
+}
 </style>

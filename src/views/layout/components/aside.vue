@@ -2,15 +2,14 @@
   <!--
     el-menu-item  的 index 不能重复， 确保唯一即可
   -->
-  <div>
-    <el-menu
-      class="nav-menu"
-      default-active="/"
-      background-color="#002033"
-      text-color="#fff"
-      active-text-color="#ffd04b"
-      router
-    > <el-menu-item index="/">
+  <el-menu
+    class="nav-menu el-menu-vertical-demo"
+    :default-active="$route.path"
+    background-color="#002033"
+    text-color="#fff"
+    active-text-color="#ffd04b"
+    router
+  > <el-menu-item index="/">
         <i class="el-icon-setting"></i>
         <span slot="title">首页</span>
       </el-menu-item>
@@ -39,7 +38,6 @@
         <span slot="title">个人设置</span>
       </el-menu-item>
     </el-menu>
- </div>
 </template>
 
 <script>
