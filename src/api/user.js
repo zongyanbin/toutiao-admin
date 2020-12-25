@@ -14,6 +14,11 @@ export const login = data => {
 
 // 获取用户信息
 export const getUserProfile = () => {
+  // JSON.parse 字符串转换为对象
+  // JSON.stringify 对象转换位字符串
+  // const userString = window.localStorage.getItem('user')
+  // const user = JSON.parse(window.localStorage.getItem('user'))
+  // console.log('userString' + userString)
   return request({
     method: 'GET',
     url: '/v1_0/user/profile',
@@ -23,7 +28,7 @@ export const getUserProfile = () => {
       // 属性名和值都得看接口的要求
       // 属性名： Authorization 接口要求的
       // 属性值： Bearer 空格token数据
-      authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDAyNTAxNDcsInVzZXJfaWQiOjEsInJlZnJlc2giOmZhbHNlLCJ2ZXJpZmllZCI6dHJ1ZX0.TFBaLGlwwL7u9RG5dKDvUOSsK2NHqQp6UJTxUDq8kzY'
+      // authorization: `Bearer ${user.token}`
     }
   })
 }

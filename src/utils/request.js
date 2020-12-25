@@ -11,11 +11,30 @@ const request = axios.create({
   url: ''
 })
 
-// 导出请求方法
-export default request
-
 // 请求拦截器
+request.interceptors.request.use(
+  // 所有请求会经过这里
+  // config 是当前请求相关的配置信息对象
+  // config 是可以修改的
+  function (config) {
+    const user = JSON.parse(window.localStorage.getItem('user'))
+    // 如果有登录信息， 则统一设置 token
+    if (user) {
+      config.headers.Authorization = `Bearer ${user.token}`
+    }
 
+    // 当这里 return config 之后请求在会真正的发出去
+    return config
+  },
+
+  // 请求失败， 会经过这里
+  function (error) {
+    return Promise.reject(error)
+  }
+)
 // 响应拦截器
 
 // 谁要使用谁就加载 request 模块
+
+// 导出请求方法
+export default request
