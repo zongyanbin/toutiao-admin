@@ -48,8 +48,20 @@
           根据赛选条件共查询到 46147 条结果记录：
         </div>
         <!-- 数据列表 -->
+        <!--
+          Table 表格组件
+          1、 把需要展示的数组列表数据绑定给 table 组件的 data 属性
+            注意：你不用去 v-for 遍历， 他自己会遍历
+          2、设计表格列 el-table-column
+            width 可以设定表格列的宽度
+            label 可以设定列的标题
+            prop   用来设定要渲染的列表项数据字段， 只能展示文本
+
+          3、 表格列默认只能渲染普通文本， 如果需要展示其它内容，
+             例如放一个按钮啊， 图片啊， 那就需要自定义表格列模板了：https://element.faas.ele.me/#/zh-CN/component/table#zi-ding-yi-lie-mo-ban
+        -->
         <el-table
-          :data="tableData"
+          :data="articles"
           stripe
           style="width: 100%"
           class="list-table"
@@ -57,24 +69,56 @@
         >
         <el-table-column
           prop="date"
-          label="日期"
+          label="封面"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="姓名"
+          prop="title"
+          label="标题"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="address"
-          label="地址">
+          label="状态">
+          <!-- 如果需要在自定义列模板中获取当前遍历项数据，
+          那么就在 template 上声明
+          slot-scopt="scope"
+           -->
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.status === 0 " type="warning">草稿</el-tag>
+            <el-tag v-if="scope.row.status === 1 ">待审核</el-tag>
+            <el-tag v-if="scope.row.status === 2 " type="success">审核通过</el-tag>
+            <el-tag v-if="scope.row.status === 3 " type="danger">审核失败</el-tag>
+            <el-tag v-if="scope.row.status === 4 " type="info">已删除</el-tag>
+          </template>
         </el-table-column>
+        <el-table-column
+          prop="pubdate"
+          label="发布时间">
+        </el-table-column>
+        <el-table-column label="操作">
+          <!-- 如果需要自定义表格列模版，则把需要自定义的内容放到 template 里面  -->
+          <template>
+            <el-button
+              size="mini"
+              circle
+              icon="el-icon-edit"
+              type="primary"
+            ></el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              circle
+              icon="el-icon-delete"
+            ></el-button>
+            </template>
+          </el-table-column>
         </el-table>
         <!-- /数据列表 -->
 
         <!-- 列表分页 -->
         <el-pagination
           layout="prev, pager, next"
+          background
           :total="1000">
         </el-pagination>
         <!--- /列表分页 -->
