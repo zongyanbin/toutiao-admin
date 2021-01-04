@@ -10,7 +10,7 @@
         <!-- /面包屑路径导航 -->
         </div>
         <!-- 数据赛选表单 -->
-        <el-form ref="form" :model="form" label-width="40px" size="mini">
+        <el-form v-loading="loading" ref="form" :model="form" label-width="40px" size="mini">
           <el-form-item label="状态">
             <el-radio-group v-model="status">
               <!--
@@ -56,7 +56,11 @@
               button 按钮的 click 事件有个默认参数
               当你没有指定参数的时候, 它会默认传递一个没用的数据
             -->
-            <el-button type="primary" @click="loadArticles(1)">查询</el-button>
+            <el-button
+              type="primary"
+              :disabled="loading"
+              @click="loadArticles(1)"
+            >查询</el-button>
           </el-form-item>
         </el-form>
         <!-- /数据赛选表单 -->
@@ -85,6 +89,7 @@
           style="width: 100%"
           class="list-table"
           size="mini"
+          v-loading="loading"
         >
         <el-table-column
           prop="date"
@@ -137,7 +142,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <!-- 如果需要自定义表格列模版，则把需要自定义的内容放到 template 里面  -->
-          <template>
+          <template slot-scope="scope">
             <el-button
               size="mini"
               circle
@@ -149,6 +154,7 @@
               type="danger"
               circle
               icon="el-icon-delete"
+              @click="onDeleteArticle(scope.row.id)"
             ></el-button>
             </template>
           </el-table-column>
@@ -160,8 +166,9 @@
           layout="prev, pager, next"
           background
           :total="totalCount"
-          @current-change="onCurrentChange"
           :page-size="pageSize"
+          :disabled="loading"
+          @current-change="onCurrentChange"
         >
         </el-pagination>
         <!--- /列表分页 -->
@@ -174,7 +181,11 @@
 </template>
 
 <script>
-import { getArticles, getArticleChannels } from '@/api/article'
+import {
+  getArticles,
+  getArticleChannels,
+  deleteArticle
+} from '@/api/article'
 
 export default {
   name: 'ArticleIndex',
@@ -205,7 +216,8 @@ export default {
       status: null, // 查询文章的状态， 不传就是全部
       channels: [], // 文章频道列表
       channelId: null, // 查询文章的频道
-      rangeDate: null // 筛选的范围日期
+      rangeDate: null, // 筛选的范围日期
+      loading: true // 表单数据加载中 loading
     }
   },
   created () {
@@ -214,6 +226,8 @@ export default {
   },
   methods: {
     loadArticles (page = 1) {
+      // 展示加载中 loading
+      this.loading = true
       getArticles({
         page,
         per_page: this.pageSize,
@@ -224,8 +238,10 @@ export default {
       }).then(res => {
         const { results, total_count: totalCount } = res.data.data
         this.articles = results
-
         this.totalCount = totalCount
+
+        // 关闭加载中 loading
+        this.loading = false
       })
     },
     onSubmit () {
@@ -240,6 +256,28 @@ export default {
         this.channels = res.data.data.channels
         console.log(res)
       })
+    },
+    onDeleteArticle (articleId) {
+      this.$confirm('确认删除吗？', '删除提示', {
+        confirmButtonText: '确认',
+        cancelButtionText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 确认执行这里
+        deleteArticle(articleId).then(res => {
+          console.log(res)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+      // 找到数据接口
+      // 封装请求方法
+      // 删除请求调用
+      // 处理响应结果
+      console.log('onDeleteArticle')
     }
   }
 }

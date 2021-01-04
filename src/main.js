@@ -13,6 +13,24 @@ import ElementUI from 'element-ui'
 // 加载 elment 组件库的样式
 import 'element-ui/lib/theme-chalk/index.css'
 
+// 加载全局样式文件
+import './styles/index.less'
+
+// import JSONbig from 'json-bigint'
+
+// const str = '{ "id":125358574559959468 }'
+// // JSON.parse()
+// console.log(JSON.parse(str))
+
+// // 它会把超出 JS 安全整数范围的数字转为一种类型为 BigNumber 的对象
+// // 我们在使用的时候需要把这个 BigNumber.toString() 就能得到原来正确的数据了
+// console.log(JSONbig.parse(str))
+// console.log(JSONbig.parse(str).id.toString())
+
+// const data = JSONbig.parse(str)
+// console.log(JSON.stringify(data))
+// console.log(JSON.stringify(data))
+
 // 注册全局 element 组件库
 Vue.use(ElementUI)
 
