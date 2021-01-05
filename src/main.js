@@ -29,7 +29,7 @@ import './styles/index.less'
 
 // const data = JSONbig.parse(str)
 // console.log(JSON.stringify(data))
-// console.log(JSON.stringify(data))
+// console.log(JSONbig.stringify(data))
 
 // 注册全局 element 组件库
 Vue.use(ElementUI)
