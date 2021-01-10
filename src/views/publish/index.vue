@@ -5,7 +5,7 @@
         <!-- 面包屑路径导航 -->
         <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>发布文章</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ $route.query.id  ? '修改文章' : '发布文章' }}</el-breadcrumb-item>
         </el-breadcrumb>
         <!-- /面包屑路径导航 -->
       </div>
@@ -35,7 +35,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onPublish">发表</el-button>
+          <el-button type="primary" @click="onPublish(false)">发表</el-button>
           <el-button @click="onPublish(true)">存入草稿</el-button>
         </el-form-item>
       </el-form>
@@ -44,7 +44,12 @@
 </template>
 
 <script>
-import { getArticleChannels, addArticle } from '@/api/article'
+import {
+  getArticleChannels,
+  addArticle,
+  getArticle,
+  updateArticle
+} from '@/api/article'
 export default {
   name: 'PublishIndex',
   components: {},
@@ -75,18 +80,53 @@ export default {
       // 找到数据接口
       // 封装请求方法
       // 请求提交表单
-      addArticle(this.article, draft).then(res => {
-      // 处理响应结果
-        this.$message({
-          message: '发布成功',
-          type: 'success'
+      // 如果是修改文章， 则执行修改操作， 否则执行添加操作
+      const articleId = this.$route.query.id
+      if (articleId) {
+        // 执行修改操作
+        updateArticle(articleId, this.article, draft).then(res => {
+          console.log(res)
+          this.$message({
+            message: `${draft ? '存入草稿' : '发布'}成功`,
+            type: 'success'
+          })
+          // 跳转到内容管理页面
+          this.$router.push('/article')
         })
-      // console.log(res)
+      } else {
+        addArticle(this.article, draft).then(res => {
+          // 处理响应结果
+          this.$message({
+            message: `${draft ? '存入草稿' : '发布'}成功`,
+            type: 'success'
+          })
+        // console.log(res)
+        })
+        // 跳转到内容管理页面
+        this.$router.push('/article')
+      }
+    },
+    loadArticle () {
+      // 找到数据接口
+      // 封装请求方法
+      // 请求获取数据
+      getArticle(this.$route.query.id).then(res => {
+        console.log(res)
+        // 模版绑定展示
+        this.article = res.data.data
       })
     }
   },
   created () {
     this.loadChannels()
+
+    // 由于我们让发布和修改使用的同一个组件
+    // 所以这个要判断
+    // 如果路由路径参数中有 id, 则请求展示文章内容
+    if (this.$route.query.id) {
+      this.loadArticle()
+    }
+    console.log()
   },
   mounted () {}
 }
