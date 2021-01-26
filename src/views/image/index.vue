@@ -11,15 +11,17 @@
         <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
     </div>
     <div class="action-head">
-      <el-radio-group v-model="radio1" size="mini">
+      <el-radio-group
+        v-model="collect"
+        size="mini"
+        @change="onCollectChange"
+      >
       <el-radio-button
-        label="全部"
-        @click.native="loadImages(false)"
-      ></el-radio-button>
+        label="false"
+      >全部</el-radio-button>
       <el-radio-button
-        label="收藏"
-        @click.native="loadImages(true)"
-      ></el-radio-button>
+        label="true"
+      >收藏</el-radio-button>
       </el-radio-group>
       <el-button
         size="mini"
@@ -51,7 +53,27 @@
     :visible.sync="dialogUploadVisible"
     :append-to-body="true"
   >
-    helloworld
+    <!--
+      upload 组件本人就支持请求提交上传操作， 说白了你使用它不用自己去发请求， 它会自己发。
+      请求方法：默认就是POST
+      请求路径：action, 必须写完整路径
+      请求头：headers
+    -->
+    <el-upload
+      v-if="dialogUploadVisible"
+      class="upload-demo"
+      drag
+      action="http://api-toutiao-web.itheima.net/mp/v1_0/user/images"
+      :headers="uploadHeaders"
+      name="image"
+      multiple
+      :show-file-list="false"
+      :on-success="onUploadSuccess"
+    >
+      <i class="el-icon-upload"></i>
+      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+      <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+    </el-upload>
   </el-dialog>
   </div>
 </template>
@@ -65,10 +87,14 @@ export default {
   components: {},
   props: {},
   data () {
+    const user = JSON.parse(window.localStorage.getItem('user'))
     return {
-      radio1: '全部',
+      collect: false, // 默认查询全部素材列表
       images: [], // 图片素材列表
-      dialogUploadVisible: false
+      dialogUploadVisible: false,
+      uploadHeaders: {
+        Authorization: `Bearer ${user.token}`
+      }
     }
   },
   watch: {},
@@ -76,10 +102,23 @@ export default {
   methods: {
     loadImages (collect = false) {
       getImages({
-        collect: collect
+        collect
       }).then(res => {
+        console.log(res)
         this.images = res.data.data.results
       })
+    },
+
+    onCollectChange (value) {
+      this.loadImages(value)
+    },
+
+    onUploadSuccess () {
+      // 关闭对话框
+      this.dialogUploadVisible = false
+
+      // 更新素材列表
+      this.loadImages(false)
     }
   },
   created () {
