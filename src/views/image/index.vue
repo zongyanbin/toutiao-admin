@@ -38,15 +38,49 @@
         :lg="4"
         v-for="(img, index) in images"
         :key="index"
+        class="image-item"
       >
         <el-image
           style="height: 100px"
           :src="img.url"
           fit="cover"
         ></el-image>
+        <div class="image-action">
+          <!--
+            class 样式绑定
+            {
+              css类名: 布尔值
+            }
+            true: 作用类名
+            false: 不作用类名
+          -->
+          <i
+            :class="{
+              'el-icon-star-on': img.is_collected,
+              'el-icon-star-off': !img.is_collected
+            }"
+            @click="onCollect(img)"
+          ></i>
+          <i class="el-icon-delete-solid"></i>
+        </div>
       </el-col>
     </el-row>
     <!-- /素材列表 -->
+
+  <!-- 数据分页 -->
+  <!--
+    分页数据改变以后， 页码不会变化它需要单独处理高亮页面
+  -->
+  <el-pagination
+    background
+    layout="prev, pager, next"
+    :total="totalCount"
+    :page-size="pageSize"
+    :current-page.sync="page"
+    @current-change="onPageChange"
+  >
+  </el-pagination>
+  <!-- /数据分页 -->
   </el-card>
 
   <el-dialog title="上传素材"
@@ -80,7 +114,8 @@
 
 <script>
 import {
-  getImages
+  getImages,
+  collectImage
 } from '@/api/image'
 export default {
   name: 'ImageIndex',
@@ -94,23 +129,31 @@ export default {
       dialogUploadVisible: false,
       uploadHeaders: {
         Authorization: `Bearer ${user.token}`
-      }
+      },
+      totalCount: 0, // 总数据条数
+      pageSize: 5, // 每页大小
+      page: 1 // 当前页码
     }
   },
   watch: {},
   computed: {},
   methods: {
-    loadImages (collect = false) {
+    loadImages (page = 1) {
+      // 重置高亮页面， 防止数据和页码不对应
+      this.page = page
       getImages({
-        collect
+        collect: this.collect,
+        page,
+        per_page: this.pageSize
       }).then(res => {
         console.log(res)
         this.images = res.data.data.results
+        this.totalCount = res.data.data.total_count
       })
     },
 
     onCollectChange (value) {
-      this.loadImages(value)
+      this.loadImages(1)
     },
 
     onUploadSuccess () {
@@ -118,20 +161,56 @@ export default {
       this.dialogUploadVisible = false
 
       // 更新素材列表
-      this.loadImages(false)
+      this.loadImages(this.page)
+
+      this.$message({
+        type: 'success',
+        message: '上传成功'
+      })
+    },
+
+    onPageChange (page) {
+      console.log(this.collect)
+      this.loadImages(page, this.collect)
+    },
+    onCollect (img) {
+      collectImage(img.id, !img.is_collected)
+    // if (img.is_collected) {
+    //     // 已收藏， 取消收藏
+    //     collectImage(img.id, false)
+    //   } else {
+    //     // 没有收藏， 添加收藏
+    //     collectImage(img.id, true)
+    //   }
     }
   },
   created () {
-    this.loadImages(false)
+    this.loadImages(1)
   },
   mounted () {}
 }
 </script>
 <style lang="less">
 .action-head {
-    padding-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.image-action {
+  font-size: 25px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  color: #fff;
+  height: 40px;
+  background-color: rgba(204, 204, 204, .5);
+  position: absolute;
+  bottom: 4px;
+  left: 5px;
+  right: 5px;
+}
+.image-item {
+  position: relative;
 }
 .wrapper{}
 </style>
