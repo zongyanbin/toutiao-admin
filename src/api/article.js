@@ -77,3 +77,20 @@ export const updateArticle = (articleId, data, draft = false) => {
     data // 请求体
   })
 }
+
+/**
+ *  更新评论状态
+ */
+export const updateCommentStatus = (articleId, allowComment) => {
+  return request({
+    method: 'PUT',
+    url: '/mp/v1_0/comments/status', // 路径参数
+    params: {
+      // 对象属性名不受代码规范限制
+      article_id: articleId
+    },
+    data: {
+      allow_comment: allowComment
+    } // 请求体
+  })
+}
