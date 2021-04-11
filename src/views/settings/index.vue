@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { getUserProfile } from '@/api/user'
+import { getUserProfile } from '@/api/user';
 export default {
   name: 'SettingsIndex',
   components: {},
@@ -96,38 +96,38 @@ export default {
         photo: ''
       }, // 用户资料
       dialogVisible: false, // 控制上传图片裁切预览的显示状态
-      previewImage: '' // 预览 图片
-    }
+      previewImage: '' // 预览图片
+    };
   },
   computed: {},
   watch: {},
   created () {
-    this.loadUser()
+    this.loadUser();
   },
   mounted () {},
   methods: {
     onSubmit () {
-      console.log('submit!')
+      console.log('submit!');
     },
     loadUser () {
       getUserProfile().then(res => {
-        this.user = res.data.data
-      })
+        this.user = res.data.data;
+      });
     },
     onFileChange () {
-      console.log('file change')
+      console.log('file change');
       // 处理图片预览
-      const file = this.$refs.file
-      const blobData = window.URL.createObjectURL(file.files[0])
-      this.previewImage = blobData
-      console.log(blobData)
+      const file = this.$refs.file;
+      const blobData = window.URL.createObjectURL(file.files[0]);
+      this.previewImage = blobData;
+      console.log(blobData);
       // 展示弹出层， 预览用户选择的图片
-      this.dialogVisible = true
+      this.dialogVisible = true;
       // 解决选择相同文件不触发 change 事件问题
-      this.$refs.file.value = ''
+      this.$refs.file.value = '';
     }
   }
-}
+};
 </script>
 <style lang="less" scoped>
 </style>
