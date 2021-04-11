@@ -27,7 +27,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-unuserd-vars': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    // 'no-unuserd-vars': 'off' // 关闭这个规则验证
-    semi: ['error', 'always'] // 配置正确 没有生效  就删除 D:\vue-project\toutiao-admin\node_modules\.cache文件
+    'no-unused-vars': 'off' // 关闭这个规则验证
+    // semi: ['error', 'always'] // 配置正确 没有生效  就删除 D:\vue-project\toutiao-admin\node_modules\.cache文件
   }
-};
+}

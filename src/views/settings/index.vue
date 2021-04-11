@@ -58,9 +58,16 @@
       title="修改头像"
       :visible.sync="dialogVisible"
       append-to-body
-      width="30%"
+      @opened="onDialogOpened"
+      @closed="onDialogClosed"
     >
-      <img :src="previewImage" alt="" width="150">
+      <div class="preview-image-wrap">
+        <img
+          class="preview-image"
+          :src="previewImage"
+          ref="preview-image"
+        >
+      </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
@@ -70,7 +77,9 @@
 </template>
 
 <script>
-import { getUserProfile } from '@/api/user';
+import { getUserProfile } from '@/api/user'
+import 'cropperjs/dist/cropper.css'
+import Cropper from 'cropperjs'
 export default {
   name: 'SettingsIndex',
   components: {},
@@ -96,38 +105,86 @@ export default {
         photo: ''
       }, // 用户资料
       dialogVisible: false, // 控制上传图片裁切预览的显示状态
-      previewImage: '' // 预览图片
-    };
+      previewImage: '', // 预览图片
+      cropper: null // 裁切器示例
+    }
   },
   computed: {},
   watch: {},
   created () {
-    this.loadUser();
+    this.loadUser()
   },
   mounted () {},
   methods: {
     onSubmit () {
-      console.log('submit!');
+      console.log('submit!')
     },
     loadUser () {
       getUserProfile().then(res => {
-        this.user = res.data.data;
-      });
+        this.user = res.data.data
+      })
     },
     onFileChange () {
-      console.log('file change');
+      console.log('file change')
       // 处理图片预览
-      const file = this.$refs.file;
-      const blobData = window.URL.createObjectURL(file.files[0]);
-      this.previewImage = blobData;
-      console.log(blobData);
+      const file = this.$refs.file
+      const blobData = window.URL.createObjectURL(file.files[0])
+      this.previewImage = blobData
+      console.log(blobData)
       // 展示弹出层， 预览用户选择的图片
-      this.dialogVisible = true;
+      this.dialogVisible = true
       // 解决选择相同文件不触发 change 事件问题
-      this.$refs.file.value = '';
+      this.$refs.file.value = ''
+    },
+    onDialogOpened () {
+      //  cropper 组件https://github.com/fengyuanchen/cropperjs
+      // 图片裁切器必须基于 img 进行初始化
+      // 注意： img 必须是可见状态才能正常完成初始化
+      //        因为我们这里要在对话框里面初始化裁切器
+      //        所以务必要在对话框完全打开的状态进行初始化
+      // 获取图片 DOM 节点
+      const image = this.$refs['preview-image']
+      // 第1次初始化好后， 如果预裁切的图片发生变化，裁切器默认不会更新
+      // 如果需要预览图片发生变化更新裁切器的2种方法：
+      //        方法一： 裁切器 .replace 方法
+      //        方法二： 销毁裁切器， 重新初始化
+      // 初始化裁切器
+      if (this.cropper) {
+        this.cropper.replace(this.previewImage)
+        return
+      }
+      this.cropper = new Cropper(image, {
+        aspectRatio: 16 / 9,
+        viewMode: 1,
+        dragMode: 'none',
+        cropBoxMovable: true,
+        cropBoxResizable: false,
+        background: true,
+        movable: true,
+        crop (event) {
+          console.log(event.detail.x)
+          console.log(event.detail.y)
+          console.log(event.detail.width)
+          console.log(event.detail.height)
+          console.log(event.detail.rotate)
+          console.log(event.detail.scaleX)
+          console.log(event.detail.scaleY)
+        }
+      })
+    },
+    onDialogClosed () {
+      // 对话框关闭， 销毁裁切器
+      // this.cropper.destroy()
     }
   }
-};
+}
 </script>
 <style lang="less" scoped>
+.preview-image-wrap {
+  .preview-image {
+  display: block;
+  max-width: 100%;
+  height: 200px;
+  }
+}
 </style>
