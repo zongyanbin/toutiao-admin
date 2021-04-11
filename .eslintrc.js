@@ -23,11 +23,11 @@ module.exports = {
     // process.env.NODE_ENV 有两种值
     //    production 生产环境
     //    development 开发环境
-    // no-console 是不允许代码中出现 console.xxx 之类的代码， 例如 console.log
+    // no-console 是不允许代码中出现 console.xxx 之类的代码， 例如 console.log文件
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-unuserd-vars': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     // 'no-unuserd-vars': 'off' // 关闭这个规则验证
-    semi: ['error', 'always'] // 配置正确 没有生效   就删除 D:\vue-project\toutiao-admin\node_modules\.cache 文件
+    semi: ['error', 'always'] // 配置正确 没有生效  就删除 D:\vue-project\toutiao-admin\node_modules\.cache文件
   }
 };
