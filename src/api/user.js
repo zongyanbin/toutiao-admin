@@ -46,3 +46,13 @@ export const updateUserPhoto = data => {
     data
   })
 }
+
+// 修改用户基本信息
+// 注意 data 必须传递 FormData 对象
+export const updateUserProfile = data => {
+  return request({
+    method: 'PATCH',
+    url: '/mp/v1_0/user/profile',
+    data
+  })
+}

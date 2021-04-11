@@ -11,7 +11,7 @@
       </div>
     <el-row>
       <el-col :span="15">
-        <el-form ref="form" :model="form" label-width="80px">
+        <el-form ref="form" :model="user" label-width="80px">
         <el-form-item label="编号">
           {{ user.id }}
         </el-form-item>
@@ -28,7 +28,11 @@
           <el-input v-model="user.email"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">保存</el-button>
+          <el-button
+            type="primary"
+            :loading="updateProfileLoading"
+            @click="onUpdateUser"
+          >保存</el-button>
         </el-form-item>
         </el-form>
       </el-col>
@@ -72,6 +76,7 @@
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
+          :loading="updatePhotoLoading"
           @click="onUpdatePhoto"
         >确 定</el-button>
       </span>
@@ -82,7 +87,8 @@
 <script>
 import {
   getUserProfile,
-  updateUserPhoto
+  updateUserPhoto,
+  updateUserProfile
 } from '@/api/user'
 import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
@@ -92,16 +98,6 @@ export default {
   props: {},
   data () {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
       user: {
         email: '',
         id: null,
@@ -112,7 +108,9 @@ export default {
       }, // 用户资料
       dialogVisible: false, // 控制上传图片裁切预览的显示状态
       previewImage: '', // 预览图片
-      cropper: null // 裁切器示例
+      cropper: null, // 裁切器示例
+      updatePhotoLoading: false, // 更新用户头像 loading 状态
+      updateProfileLoading: false // 更新基本信息的 loading 状态
     }
   },
   computed: {},
@@ -122,12 +120,31 @@ export default {
   },
   mounted () {},
   methods: {
-    onSubmit () {
+    onUpdateUser () {
+      // 表单验证
+      // 验证通过， 提交表单
+      // 开启 loading 状态
+      this.updateProfileLoading = true
+      const { name, intro, email } = this.user
+      updateUserProfile({
+        name,
+        intro,
+        email
+      }).then(res => {
+        this.$message({
+          type: 'success',
+          message: '保存成功'
+        })
+
+        // 关闭 loading 状态
+        this.updateProfileLoading = false
+      })
       console.log('submit!')
     },
     loadUser () {
       getUserProfile().then(res => {
         this.user = res.data.data
+        this.previewImage = this.user.photo
       })
     },
     onFileChange () {
@@ -183,6 +200,8 @@ export default {
       // this.cropper.destroy()
     },
     onUpdatePhoto () {
+      // 让确认按钮开始 loading
+      this.updatePhotoLoading = true
       // 获取裁切的图片对象
       this.cropper.getCroppedCanvas().toBlob(file => {
         const fd = new FormData()
@@ -192,7 +211,19 @@ export default {
           // 关闭对话框
           this.dialogVisible = false
           // 更新视图展示
-          this.user.photo = res.data.data.photo
+
+          // 直接把裁切结果的文件对象转为 blob 数据本地预览
+          this.user.photo = window.URL.createObjectURL(file)
+
+          // 关闭确认按钮 loading
+          this.updatePhotoLoading = false
+
+          this.$message({
+            type: 'success',
+            message: '更新头像成功'
+          })
+          // 把服务端返回的图片进行展示有点慢
+          // this.user.photo = res.data.data.photo
           console.log(res)
         })
       })
