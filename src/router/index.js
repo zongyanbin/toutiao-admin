@@ -15,6 +15,8 @@ import Publish from '@/views/publish/'
 import Image from '@/views/image/'
 import Comment from '@/views/comment/'
 import Settings from '@/views/settings/'
+
+import Fans from '@/views/fans/'
 Vue.use(VueRouter)
 
 // 路由设置
@@ -63,6 +65,11 @@ const routes = [
         path: '/settings',
         name: 'settings',
         component: Settings
+      },
+      {
+        path: '/fans',
+        name: 'fans',
+        component: Fans
       }
     ]
   }
